@@ -1,0 +1,63 @@
+2. а)Видалення попередньої версії бази даних
+
+DROP DATABASE IF EXISTS database_name;
+
+   b)Створення бази даних
+
+CREATE DATABASE IF NOT EXISTS magazine 
+CHARACTER SET 'utf8'
+COLLATE 'utf8_general_ci'
+ 
+   c)Створення таблиці на основі універсального відношення. Команда для створення таблиці повинна містити головний ключ, обмеження
+типу null / not null, default, check. 
+
+CREATE TABLE IF NOT EXISTS magas
+(
+    id_N INT(11) NOT NULL PRIMARY KEY,
+    cod INT(11) NOT NULL,
+    novelty BOOLEAN NOT NULL,
+    name VARCHAR(30) NOT NULL,
+    price VARCHAR NULL,
+    visionary VARCHAR(30) NOT NULL,
+    pages INT(11) NOT NULL,
+    format VARCHAR NULL DEFAULT 0,
+    date_ VARCHAR NULL,
+    circulation INT(11) NOT NULL,
+    topic VARCHAR(30) NOT NULL,
+    category VARCHAR(30) NOT NULL
+    
+    CHECK(id_N>=2 AND cod>=44 AND pages>=25)
+)
+ENGINE=InnoDB CHARACTER SET 'utf8'
+COLLATE 'utf8_general_ci';
+
+
+   d)Створення додаткового індексу.
+
+ALTER TABLE magas ADD INDEX idx_idN_cod(cod,id_N)
+
+   e)Завантаження даних в таблицю.
+
+LOAD DATA INFILE 'lab.txt' INTO TABLE magas;
+
+3. a)Додавання в таблицю нового текстового поля "Автор", розміром 15 символів
+
+ALTER TABLE magas ADD Author VARCHAR(15)
+
+   b)Збільшення розміру текстового поля "Автор" до 20 символів
+
+ALTER TABLE magas MODIFY COLUMN Author VARCHAR(20)
+
+   c)Видалення текстового поля "Автор" з таблиці
+
+ALTER TABLE magas DROP COLUMN Author
+
+   d)Зміна порядку сортування індексу і призначення його унікальності
+
+ALTER TABLE magas ADD INDEX idx_pag(pages);
+SELECT* FROM magas WHERE idx_pag<5000
+
+   e)Видалення індексу
+
+ALTER TABLE magas DROP INDEX idx_pag;
+
