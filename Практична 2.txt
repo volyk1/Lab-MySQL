@@ -1,0 +1,99 @@
+1. Вивести значення наступних колонок: номер, код, новинка, назва, ціна, сторінки
+
+SELECT id_N, cod, novelty, name, price, pages FROM magas
+
+
+2. Вивести значення всіх колонок
+
+SELECT * FROM magas
+
+
+3. Вивести значення колонок в наступному порядку: код, назва, новинка, сторінки, ціна, номер
+
+SELECT cod, name, novelty, pages, price, id_N FROM magas
+
+
+4. Вивести значення всіх колонок 10 перших рядків
+
+SELECT * FROM magas LIMIT 10
+
+
+5. Вивести значення всіх колонок 10% перших рядків
+
+SELECT COUNT(*) FROM magas; // ми дізналися кількість запитів, в нашому випадку це 23
+SELECT * FROM magas LIMIT 0,2
+
+
+6. Вивести значення колонки код без повторення однакових кодів
+
+SELECT DISTINCT cod FROM magas
+
+
+7. Вивести всі книги новинки
+
+SELECT * FROM magas WHERE novelty='Yes'
+
+
+8. Вивести всі книги новинки з ціною від 20 до 30
+
+SELECT * FROM magas WHERE novelty = 'Yes' AND price BETWEEN '$20.00' AND '$30.00';
+
+
+9. Вивести всі книги новинки з ціною менше 20 і більше 30
+
+SELECT * FROM magas WHERE novelty = 'Yes' AND NOT BETWEEN 20 AND 30;
+
+
+10. Вивести всі книги з кількістю сторінок від 300 до 400 і з ціною більше 20 і менше 30
+
+SELECT * FROM magas WHERE pages BETWEEN 300 AND 400 AND price > 20 AND price < 30;
+
+
+11. Вивести всі книги видані взимку 2000 року
+
+SELECT * FROM magas WHERE date_ BETWEEN CAST('2000-01-01' AS DATE) AND CAST('2000-02-29' AS DATE) OR date_ BETWEEN CAST('2000-12-01' AS DATE) AND CAST('2000-12-31' AS DATE);
+
+
+12. Вивести книги зі значеннями кодів 5110, 5141, 4985, 4241
+
+SELECT * FROM magas WHERE cod IN(5110, 5141, 4985, 4241)
+
+
+13. Вивести книги видані в 1999, 2001, 2003, 2005 р
+
+SELECT * FROM magas WHERE YEAR(date_)IN(1999,2001,2003,2005)
+
+
+14. Вивести книги назви яких починаються на літери А-К
+
+SELECT * FROM magas WHERE name>='А' AND name<'К' ORDER BY name
+
+
+15. Вивести книги назви яких починаються на літери "АПП", видані в 2000 році з ціною до 20
+
+SELECT * FROM magas WHERE name LIKE 'АПП%' AND date_ LIKE '2000%' AND price<20 ORDER BY name
+
+
+16. Вивести книги назви яких починаються на літери "АПП", закінчуються на "е", видані в першій половині 2000 року
+
+SELECT * FROM magas WHERE name LIKE 'АПП%е' AND date_ BETWEEN CAST('2000-01-01' AS DATE) AND CAST('2000-06-30' AS DATE)
+
+
+17. Вивести книги, в назвах яких є слово Microsoft, але немає слова Windows
+
+SELECT * FROM magas WHERE name LIKE '%Microsoft%' AND name NOT LIKE '%Windows%';
+
+
+18. Вивести книги, в назвах яких присутня як мінімум одна цифра.
+
+SELECT * FROM magas WHERE name RLIKE '[0-9]';
+
+
+19. Вивести книги, в назвах яких присутні не менше трьох цифр.
+
+SELECT * FROM magas WHERE name RLIKE '.*[0-9].*[0-9].*[0-9].*';
+
+
+20. Вивести книги, в назвах яких присутній рівно п'ять цифр.
+
+SELECT * FROM magas WHERE name RLIKE '.*[0-9].*[0-9].*[0-9].*[0-9].*[0-9].*' AND name NOT RLIKE '.*[0-9].*[0-9].*[0-9].*[0-9].*[0-9].*[0-9].*';
