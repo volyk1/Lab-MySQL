@@ -1,0 +1,220 @@
+1. Вивести статистику: загальна кількість всіх книг, їх вартість, їх середню вартість, мінімальну і максимальну ціну
+
+   SELECT COUNT(name), ROUND(SUM(price),2), ROUND(AVG(price),2), MIN(price), MAX(price) FROM magas;
+
+
+2. Вивести загальну кількість всіх книг без урахування книг з непроставленою ціною
+
+   SELECT COUNT(*) as total_books FROM magas WHERE price IS NOT NULL;
+
+
+3. Вивести статистику (див. 1) для книг новинка / не новинка
+
+   SELECT novelty, COUNT(name) AS total_books FROM magas GROUP BY novelty;
+
+
+4. Вивести статистику (див. 1) для книг за кожним роком видання
+
+   SELECT YEAR(date_), COUNT(*) as total_books FROM magas GROUP BY YEAR(date_);
+
+
+5. Змінити п.4, виключивши з статистики книги з ціною від 10 до 20
+
+   SELECT YEAR(date_), COUNT(*) as total_books 
+   FROM magas 
+   WHERE price < 10 OR price > 20
+   GROUP BY YEAR(date_);
+
+
+6. Змінити п.4. Відсортувати статистику по спадаючій кількості.
+
+   SELECT YEAR(date_), COUNT(*) as total_books 
+   FROM magas 
+   GROUP BY YEAR(date_)
+   ORDER BY total_books DESC;
+
+
+7. Вивести загальну кількість кодів книг і кодів книг що не повторюються
+
+   SELECT COUNT(cod) as total_codes, COUNT(DISTINCT cod) as unique_codes FROM magas;
+
+
+8. Вивести статистику: загальна кількість і вартість книг по першій букві її назви
+
+   SELECT LEFT(name, 1) AS first_letter, COUNT(*) AS total_books, ROUND(SUM(price),2) AS total_price
+   FROM magas
+   GROUP BY first_letter
+   ORDER BY first_letter ASC;
+
+
+9. Змінити п. 8, виключивши з статистики назви що починаються з англ. букви або з цифри.
+
+   SELECT 
+       SUBSTRING(name, 1, 1) AS first_letter, 
+       COUNT(*) AS total_books, 
+       ROUND(SUM(price),2) AS total_price
+   FROM 
+       magas
+   WHERE 
+       SUBSTRING(name, 1, 1) NOT REGEXP '[a-zA-Z0-9]'
+   GROUP BY 
+       first_letter
+   ORDER BY 
+       first_letter ASC;
+
+
+10. Змінити п. 9 так щоб до складу статистики потрапили дані з роками більшими за 2000.
+
+   SELECT 
+       SUBSTRING(name, 1, 1) AS first_letter, 
+       COUNT(*) AS total_books, 
+       ROUND(SUM(price),2) AS total_price
+   FROM 
+       magas
+   WHERE 
+       SUBSTRING(name, 1, 1) NOT REGEXP '[a-zA-Z0-9]' AND YEAR(date_) > 2000
+   GROUP BY 
+       first_letter
+   ORDER BY 
+       first_letter ASC;
+
+
+11. Змінити п. 10. Відсортувати статистику по спадаючій перших букв назви.
+
+   SELECT
+       SUBSTRING(name, 1, 1) AS first_letter,
+       COUNT(*) AS total_books,
+       ROUND(SUM(price),2) AS total_price
+   FROM
+       magas
+   WHERE
+       SUBSTRING(name, 1, 1) NOT REGEXP '[a-zA-Z0-9]' AND YEAR(date_) > 2000
+   GROUP BY
+       first_letter
+   ORDER BY
+       first_letter DESC;
+
+
+12. Вивести статистику (див. 1) по кожному місяцю кожного року
+
+   SELECT
+       YEAR(date_) AS year,
+       MONTH(date_) AS month,
+       COUNT(*) AS total_books
+   FROM
+       magas
+   GROUP BY
+       YEAR(date_), MONTH(date_)
+   ORDER BY
+       year, month;
+
+
+13. Змінити п. 12 так щоб до складу статистики не увійшли дані з незаповненими датами.
+
+   SELECT
+       YEAR(date_) AS year,
+       MONTH(date_) AS month,
+       COUNT(*) AS total_books
+   FROM
+       magas
+   WHERE
+       date_ IS NOT NULL
+   GROUP BY
+       YEAR(date_), MONTH(date_)
+   ORDER BY
+       year, month;
+
+
+14. Змінити п. 12. Фільтр по спадаючій року і зростанню місяця.
+
+   SELECT
+       YEAR(date_) AS year,
+       MONTH(date_) AS month,
+       COUNT(*) AS total_books
+   FROM
+       magas
+   WHERE
+       date_ IS NOT NULL
+   GROUP BY
+       YEAR(date_), MONTH(date_)
+   ORDER BY
+       year DESC, month ASC;
+
+
+15. Вивести статистику для книг новинка / не новинка: загальна ціна, загальна ціна в грн. / Євро / руб. Колонкам запиту дати назви за змістом.
+
+   SELECT 
+       novelty AS 'Новинка / Не новинка', 
+       COUNT(*) AS 'Кількість книг', 
+       ROUND(SUM(CASE WHEN currency = 'UAH' THEN price ELSE 0 END),2) AS 'Загальна ціна (грн)', 
+       ROUND(SUM(CASE WHEN currency = 'EUR' THEN price ELSE 0 END),2) AS 'Загальна ціна (євро)', 
+       ROUND(SUM(CASE WHEN currency = 'RUB' THEN price ELSE 0 END),2) AS 'Загальна ціна (руб)' 
+  FROM magas 
+  GROUP BY novelty;
+
+
+16. Змінити п. 15 так щоб виводилася округлена до цілого числа (дол. / Грн. / Євро / руб.) Ціна.
+
+   SELECT 
+       novelty AS 'Новинка / Не новинка', 
+       COUNT(*) AS 'Кількість книг', 
+       ROUND(SUM(CASE WHEN currency = 'UAH' THEN price ELSE 0 END)) AS 'Загальна ціна (грн)', 
+       ROUND(SUM(CASE WHEN currency = 'EUR' THEN price ELSE 0 END)) AS 'Загальна ціна (євро)', 
+       ROUND(SUM(CASE WHEN currency = 'RUB' THEN price ELSE 0 END)) AS 'Загальна ціна (руб)' 
+  FROM magas 
+  GROUP BY novelty;
+
+
+17. Вивести статистику (див. 1) по видавництвах.
+
+   SELECT visionary, COUNT(*) AS total_books, ROUND(AVG(price),2) AS avg_price
+   FROM magas
+   GROUP BY visionary
+   ORDER BY total_books DESC;
+
+
+18. Вивести статистику (див. 1) за темами і видавництвами. Фільтр по видавництвам.
+
+   SELECT 
+       category,
+       visionary,
+       COUNT(*) as total_books
+   FROM 
+       magas
+   WHERE     
+       visionary = 'Видавнича група BHV'
+   GROUP BY 
+       category, visionary
+   ORDER BY 
+       visionary, category
+
+
+19. Вивести статистику (див. 1) за категоріями, темами і видавництвами. Фільтр по видавництвам, темах, категоріям.
+
+   SELECT
+      category,
+      topic,
+      visionary,
+      COUNT(*) AS total_books,
+      ROUND(SUM(price)) AS total_price,
+      ROUND(SUM(CASE WHEN currency='UAH' THEN price ELSE 0 END),2) AS total_price_uah,
+      ROUND(SUM(CASE WHEN currency='EUR' THEN price ELSE 0 END),2) AS total_price_eur,
+      ROUND(SUM(CASE WHEN currency='RUB' THEN price ELSE 0 END),2) AS total_price_rub
+   FROM
+      magas
+   WHERE
+      visionary IN ('Видавнича група BHV', 'Вільямс', 'ДМК') AND
+      topic IN ('Використання ПК в цілому', 'Операційні системи', 'Програмування') AND
+      category IN ('Підручники', 'Апаратні засоби ПК', 'Windows 2000')
+   GROUP BY
+      category, topic, visionary
+   ORDER BY
+      category, topic, visionary;
+
+
+20. Вивести список видавництв, у яких округлена до цілого ціна однієї сторінки більше 10 копійок
+
+   SELECT DISTINCT visionary
+   FROM magas
+   WHERE ROUND(price / pages, 2) > 0.1;
+
