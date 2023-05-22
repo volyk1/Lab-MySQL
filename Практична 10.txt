@@ -1,0 +1,48 @@
+1. Створити користувальницький тип даних для зберігання оцінки учня на основі стандартного типу tinyint з можливістю використання порожніх
+значень.
+
+CREATE TYPE grade AS ENUM('' , '1', '2', '3', '4', '5');
+
+
+2. Створити об'єкт-замовчування (default) зі значенням 3.
+
+CREATE DEFAULT grade_default AS 3;
+
+
+3. Зв'язати об'єкт-замовчування з призначеним для користувача типом даних для оцінки.
+
+ALTER TYPE grade  
+ALTER DEFAULT grade_default;
+
+
+4. Отримати інформацію про призначений для користувача тип даних.
+    
+SELECT * 
+FROM information_schema.domain_constraints
+WHERE domain_name = 'grade';
+
+
+5. Створити об'єкт-правило (rule): a> = 1 і a <= 5 і зв'язати його з призначеним для користувача типом даних для оцінки.
+
+ALTER TYPE grade  
+ADD CONSTRAINT grade_check  
+CHECK (VALUE > '1' AND VALUE < '5');
+
+
+6. Створити таблицю "Успішність студента", використовуючи новий тип даних. У таблиці повинні бути оцінки студента з кількох предметів.
+
+CREATE TABLE student_results (
+  subject text,
+  grade grade 
+);
+
+
+7. Скасувати всі прив'язки і видалити з бази даних тип даних користувача, замовчування і правило.
+
+ALTER DOMAIN grade  
+DROP CONSTRAINT grade_check, 
+DROP DEFAULT;
+
+DROP DOMAIN grade;    
+DROP DEFAULT grade_default;
+DROP TABLE student_results;
