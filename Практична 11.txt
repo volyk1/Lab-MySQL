@@ -1,0 +1,37 @@
+Проектування БД за індивідуальними завданнями
+Виконати системний аналіз вибраної вами предметної області:
+1) Зробити опис предметної області – області автоматизації:
+a) користувачі та їх вимоги до створюваної автоматизованої системи
+b) документи, що циркулюють в предметній області,
+c) правила за якими вони формуються
+d) описати обмеження на інформацію, що повинна зберігатись в БД
+2) Сформувати словник БД .
+3) Визначити сутності предметної області, їх атрибути .
+4) Визначити зв'язки між сутностями предметної області. Побудувати інфологічну модель.
+5) Побудувати таблиці опису та зв’язки між ними. Зробити запити.
+
+7. Інформаційна система військового округу
+
+CREATE TABLE department (
+id INT PRIMARY KEY,
+title VARCHAR(100)
+);
+
+CREATE TABLE soldier (
+id INT PRIMARY KEY,
+name VARCHAR(100),
+rank VARCHAR(100),
+department_id INT,
+FOREIGN KEY (department_id) REFERENCES department (id)
+);
+
+ALTER TABLE soldier ADD INDEX(department_id);
+ALTER TABLE department ADD INDEX (id);
+
+SELECT * FROM soldier
+JOIN department ON soldier.department_id = department.id
+WHERE department.id = 1
+
+SELECT rank, COUNT(*)
+FROM soldier
+GROUP BY rank
